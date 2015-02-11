@@ -1,2 +1,5 @@
 language: csharp
 solution: emailInvoiceFormat.sln
+env:
+  global:
+    - EnableNuGetPackageRestore=true
