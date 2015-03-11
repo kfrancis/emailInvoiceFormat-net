@@ -37,9 +37,16 @@ namespace emailInvoiceFormat
         /// <param name="header">The object to serialize</param>
         /// <param name="shouldFormat">Should the json be formatted, usually not</param>
         /// <returns>The json representation of the X-Header object</returns>
-        public static string AsJSON(this InvoiceEmailHeader header, bool shouldFormat = false)
+        public static string AsJSON(this InvoiceEmailHeader header, bool shouldFormat = false, JsonSerializerSettings serializationSettings = null)
         {
-            return JsonConvert.SerializeObject(header, shouldFormat ? Formatting.None : Formatting.Indented);
+            if (serializationSettings == null)
+            {
+                return JsonConvert.SerializeObject(header, shouldFormat ? Formatting.None : Formatting.Indented);
+            }
+            else
+            {
+                return JsonConvert.SerializeObject(header, shouldFormat ? Formatting.None : Formatting.Indented, serializationSettings);
+            }
         }
 
         /// <summary>
