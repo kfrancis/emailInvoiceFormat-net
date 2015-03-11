@@ -36,6 +36,7 @@ namespace emailInvoiceFormat
         /// </summary>
         /// <param name="header">The object to serialize</param>
         /// <param name="shouldFormat">Should the json be formatted, usually not</param>
+        /// <param name="serializationSettings">Optional serialization settings</param>
         /// <returns>The json representation of the X-Header object</returns>
         public static string AsJSON(this InvoiceEmailHeader header, bool shouldFormat = false, JsonSerializerSettings serializationSettings = null)
         {
