@@ -27,6 +27,8 @@ namespace emailInvoiceFormat
     using System;
     using System.Linq;
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
+
     #endregion
 
     public static class HeaderExtensions
@@ -62,6 +64,28 @@ namespace emailInvoiceFormat
     }
 
     /// <summary>
+    /// Converter
+    /// </summary>
+    public class EscapeQuoteConverter : JsonConverter
+    {
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            writer.WriteValue(value.ToString().Replace("'", "\\'"));
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var value = JToken.Load(reader).Value<string>();
+            return value.Replace("\\'", "'");
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(string);
+        }
+    }
+
+    /// <summary>
     /// From http://email-invoice-format.org/
     /// </summary>
     /// <remarks>Used http://json2csharp.com/ to generate this base of this class</remarks>
@@ -74,6 +98,7 @@ namespace emailInvoiceFormat
         /// </summary>
         /// <example>1.0</example>
         [JsonProperty("version", Required = Required.Always)]
+        [JsonConverter(typeof(EscapeQuoteConverter))]
         public string Version { get { return "1.0"; } }
 
         /// <summary>
@@ -81,6 +106,7 @@ namespace emailInvoiceFormat
         /// </summary>
         /// <example>Service Provider</example>
         [JsonProperty("issuer", Required = Required.Always)]
+        [JsonConverter(typeof(EscapeQuoteConverter))]
         public string Issuer { get; set; }
 
         /// <summary>
@@ -88,6 +114,7 @@ namespace emailInvoiceFormat
         /// </summary>
         /// <example>bill.pdf</example>
         [JsonProperty("filename", Required = Required.Always)]
+        [JsonConverter(typeof(EscapeQuoteConverter))]
         public string Filename { get; set; }
 
         /// <summary>
@@ -95,6 +122,7 @@ namespace emailInvoiceFormat
         /// </summary>
         /// <example>XF4321-89</example>
         [JsonProperty("invoice_id")]
+        [JsonConverter(typeof(EscapeQuoteConverter))]
         public string InvoiceId { get; set; }
 
         /// <summary>
@@ -118,6 +146,7 @@ namespace emailInvoiceFormat
         /// </summary>
         /// <example>true</example>
         [JsonProperty("paid", Required = Required.Always)]
+        [JsonConverter(typeof(EscapeQuoteConverter))]
         public bool Paid { get; set; }
 
         /// <summary>
@@ -133,6 +162,7 @@ namespace emailInvoiceFormat
         /// </summary>
         /// <example>39.90</example>
         [JsonProperty("amount", Required = Required.Always)]
+        [JsonConverter(typeof(EscapeQuoteConverter))]
         public decimal Amount { get; set; }
 
         /// <summary>
@@ -140,6 +170,7 @@ namespace emailInvoiceFormat
         /// </summary>
         /// <example>USD</example>
         [JsonProperty("currency", Required = Required.Always)]
+        [JsonConverter(typeof(EscapeQuoteConverter))]
         public string Currency { get; set; }
 
         /// <summary>
@@ -147,6 +178,7 @@ namespace emailInvoiceFormat
         /// </summary>
         /// <example>https://…/paybill?id=XF4321-89</example>
         [JsonProperty("payUrl")]
+        [JsonConverter(typeof(EscapeQuoteConverter))]
         public string PayURL { get; set; }
     }
 }
