@@ -1,8 +1,0 @@
-language: csharp
-
-env:
-  global:
-    - EnableNuGetPackageRestore=true
-
-script:
-  - xbuild CI.proj

@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Text.RegularExpressions;
 using System.Web;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
-namespace emailInvoiceFormat.Tests
+namespace EmailInvoiceFormat.Tests
 {
     [TestClass]
     public class EmailInvoiceHeaderTests

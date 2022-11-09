@@ -1,4 +1,5 @@
-﻿#region License, Terms and Conditions
+#region License, Terms and Conditions
+
 // InvoiceEmailHeader.cs
 // Author: Kori Francis <twitter.com/djbyter>
 
@@ -19,15 +20,16 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
+
 #endregion
 
-namespace emailInvoiceFormat
+namespace EmailInvoiceFormat
 {
     #region Imports
-    using System;
-    using System.Linq;
+
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+    using System;
 
     #endregion
 
@@ -69,9 +71,9 @@ namespace emailInvoiceFormat
     /// </summary>
     public class EscapeQuoteConverter : JsonConverter
     {
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override bool CanConvert(Type objectType)
         {
-            writer.WriteValue(value.ToString().Replace("'", "\\'"));
+            return objectType == typeof(string);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -80,9 +82,9 @@ namespace emailInvoiceFormat
             return value.Replace("\\'", "'");
         }
 
-        public override bool CanConvert(Type objectType)
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            return objectType == typeof(string);
+            writer.WriteValue(value.ToString().Replace("'", "\\'"));
         }
     }
 
@@ -95,18 +97,26 @@ namespace emailInvoiceFormat
         public static string HeaderName = "X-Invoice";
 
         /// <summary>
-        /// The only existing version of this format to date
+        /// Amount of the invoice
         /// </summary>
-        /// <example>1.0</example>
-        [JsonProperty("version", Required = Required.Always)]
-        public string Version { get { return "1.0"; } }
+        /// <example>39.90</example>
+        [JsonProperty("amount", Required = Required.Always)]
+        public decimal Amount { get; set; }
 
         /// <summary>
-        /// The name of the company issuing the invoice
+        /// ISO 4217 3-letter code of the currency of the invoice
         /// </summary>
-        /// <example>Service Provider</example>
-        [JsonProperty("issuer", Required = Required.Always)]
-        public string Issuer { get; set; }
+        /// <example>USD</example>
+        [JsonProperty("currency", Required = Required.Always)]
+        public string Currency { get; set; }
+
+        /// <summary>
+        /// ISO 8601 formatted timestamp. Date when invoice is due.
+        /// </summary>
+        /// <example>2015-01-30T12:00:00+01:00</example>
+        [JsonProperty("due_date")]
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.IsoDateTimeConverter))]
+        public DateTime DueDate { get; set; }
 
         /// <summary>
         /// Filename of the attachment in the email body. Refers to the filename part of the Content-disposition header.
@@ -114,13 +124,6 @@ namespace emailInvoiceFormat
         /// <example>bill.pdf</example>
         [JsonProperty("filename", Required = Required.Always)]
         public string Filename { get; set; }
-
-        /// <summary>
-        /// Service provider internal reference for the invoice
-        /// </summary>
-        /// <example>XF4321-89</example>
-        [JsonProperty("invoice_id")]
-        public string InvoiceId { get; set; }
 
         /// <summary>
         /// ISO 8601 formatted timestamp. Date of invoice issuance.
@@ -131,12 +134,18 @@ namespace emailInvoiceFormat
         public DateTime InvoiceDate { get; set; }
 
         /// <summary>
-        /// ISO 8601 formatted timestamp. Date when invoice is due.
+        /// Service provider internal reference for the invoice
         /// </summary>
-        /// <example>2015-01-30T12:00:00+01:00</example>
-        [JsonProperty("due_date")]
-        [JsonConverter(typeof(Newtonsoft.Json.Converters.IsoDateTimeConverter))]
-        public DateTime DueDate { get; set; }
+        /// <example>XF4321-89</example>
+        [JsonProperty("invoice_id")]
+        public string InvoiceId { get; set; }
+
+        /// <summary>
+        /// The name of the company issuing the invoice
+        /// </summary>
+        /// <example>Service Provider</example>
+        [JsonProperty("issuer", Required = Required.Always)]
+        public string Issuer { get; set; }
 
         /// <summary>
         /// Flag to tell if the invoice is paid
@@ -154,24 +163,18 @@ namespace emailInvoiceFormat
         public DateTime? PaidDate { get; set; }
 
         /// <summary>
-        /// Amount of the invoice
-        /// </summary>
-        /// <example>39.90</example>
-        [JsonProperty("amount", Required = Required.Always)]
-        public decimal Amount { get; set; }
-
-        /// <summary>
-        /// ISO 4217 3-letter code of the currency of the invoice
-        /// </summary>
-        /// <example>USD</example>
-        [JsonProperty("currency", Required = Required.Always)]
-        public string Currency { get; set; }
-
-        /// <summary>
         /// A direct link to the page where the bill can be paid, if not already paid
         /// </summary>
         /// <example>https://…/paybill?id=XF4321-89</example>
         [JsonProperty("payUrl")]
         public string PayURL { get; set; }
+
+        /// <summary>
+        /// The only existing version of this format to date
+        /// </summary>
+        /// <example>1.0</example>
+        [JsonProperty("version", Required = Required.Always)]
+        public string Version
+        { get { return "1.0"; } }
     }
 }
