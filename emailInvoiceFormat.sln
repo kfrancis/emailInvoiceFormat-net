@@ -9,7 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "emailInvoiceFormat.Tests", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D2A5776E-5CFC-4D01-905C-C3F58A9B6F0F}"
 	ProjectSection(SolutionItems) = preProject
+		.github\dependabot.yml = .github\dependabot.yml
 		LICENSE = LICENSE
+		.github\workflows\main.yml = .github\workflows\main.yml
 		README.md = README.md
 		version.json = version.json
 	EndProjectSection

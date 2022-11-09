@@ -78,12 +78,22 @@ namespace EmailInvoiceFormat
 
         public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
+            if (reader is null)
+            {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
             var value = JToken.Load(reader).Value<string>();
             return value?.Replace("\\'", "'");
         }
 
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
+            if (writer is null)
+            {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
             writer.WriteValue(value?.ToString().Replace("'", "\\'"));
         }
     }
@@ -94,7 +104,8 @@ namespace EmailInvoiceFormat
     /// <remarks>Used http://json2csharp.com/ to generate this base of this class</remarks>
     public class InvoiceEmailHeader
     {
-        public static string HeaderName = "X-Invoice";
+        private const string InvoiceHeader = "X-Invoice";
+        public static string HeaderName => InvoiceHeader;
 
         /// <summary>
         /// The only existing version of this format to date
@@ -175,6 +186,6 @@ namespace EmailInvoiceFormat
         /// </summary>
         /// <example>https://…/paybill?id=XF4321-89</example>
         [JsonProperty("payUrl")]
-        public string? PayURL { get; set; }
+        public Uri? PayURL { get; set; }
     }
 }
