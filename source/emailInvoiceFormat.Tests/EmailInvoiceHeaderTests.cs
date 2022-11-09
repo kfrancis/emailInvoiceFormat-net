@@ -1,8 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
-using System.Web;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EmailInvoiceFormat.Tests
 {
@@ -13,7 +12,7 @@ namespace EmailInvoiceFormat.Tests
         public void Does_Respect_Serialization_Settings()
         {
             // Arrange
-            InvoiceEmailHeader header = new InvoiceEmailHeader() {
+            var header = new InvoiceEmailHeader() {
                 Issuer = "Service Provider",
                 Filename = "bill.pdf",
                 InvoiceId = "XF4321-89",
@@ -37,7 +36,7 @@ namespace EmailInvoiceFormat.Tests
         public void Can_Serialize_Correctly()
         {
             // Arrange
-            InvoiceEmailHeader header = new InvoiceEmailHeader() {
+            var header = new InvoiceEmailHeader() {
                 Issuer = "Service Provider",
                 Filename = "bill.pdf",
                 InvoiceId = "XF4321-89",
