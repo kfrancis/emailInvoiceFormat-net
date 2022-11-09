@@ -57,7 +57,7 @@ namespace EmailInvoiceFormat.Tests
             Assert.IsNotNull(headerValue);
             Assert.IsFalse(string.IsNullOrWhiteSpace(headerValue));
             Assert.IsNotNull(result);
-            Assert.AreEqual(header.Version, result.Version);
+            Assert.AreEqual(InvoiceEmailHeader.Version, InvoiceEmailHeader.Version);
             Assert.AreEqual(header.Issuer, result.Issuer);
             Assert.AreEqual(header.Filename, result.Filename);
             Assert.AreEqual(header.InvoiceId, result.InvoiceId);

@@ -42,7 +42,7 @@ namespace EmailInvoiceFormat
         /// <param name="shouldFormat">Should the json be formatted, usually not</param>
         /// <param name="serializationSettings">Optional serialization settings</param>
         /// <returns>The json representation of the X-Header object</returns>
-        public static string AsJSON(this InvoiceEmailHeader header, bool shouldFormat = false, JsonSerializerSettings serializationSettings = null)
+        public static string AsJSON(this InvoiceEmailHeader header, bool shouldFormat = false, JsonSerializerSettings? serializationSettings = null)
         {
             if (serializationSettings == null)
             {
@@ -60,7 +60,7 @@ namespace EmailInvoiceFormat
         /// </summary>
         /// <param name="json">The json to deserialize</param>
         /// <returns>The X-Header object</returns>
-        public static InvoiceEmailHeader FromJSON(this string json)
+        public static InvoiceEmailHeader? FromJSON(this string json)
         {
             return JsonConvert.DeserializeObject<InvoiceEmailHeader>(json);
         }
@@ -76,15 +76,15 @@ namespace EmailInvoiceFormat
             return objectType == typeof(string);
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             var value = JToken.Load(reader).Value<string>();
-            return value.Replace("\\'", "'");
+            return value?.Replace("\\'", "'");
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
-            writer.WriteValue(value.ToString().Replace("'", "\\'"));
+            writer.WriteValue(value?.ToString().Replace("'", "\\'"));
         }
     }
 
@@ -95,6 +95,14 @@ namespace EmailInvoiceFormat
     public class InvoiceEmailHeader
     {
         public static string HeaderName = "X-Invoice";
+
+        /// <summary>
+        /// The only existing version of this format to date
+        /// </summary>
+        /// <example>1.0</example>
+        [JsonProperty("version", Required = Required.Always)]
+        public static string Version
+        { get { return "1.0"; } }
 
         /// <summary>
         /// Amount of the invoice
@@ -108,7 +116,7 @@ namespace EmailInvoiceFormat
         /// </summary>
         /// <example>USD</example>
         [JsonProperty("currency", Required = Required.Always)]
-        public string Currency { get; set; }
+        public string? Currency { get; set; }
 
         /// <summary>
         /// ISO 8601 formatted timestamp. Date when invoice is due.
@@ -123,7 +131,7 @@ namespace EmailInvoiceFormat
         /// </summary>
         /// <example>bill.pdf</example>
         [JsonProperty("filename", Required = Required.Always)]
-        public string Filename { get; set; }
+        public string? Filename { get; set; }
 
         /// <summary>
         /// ISO 8601 formatted timestamp. Date of invoice issuance.
@@ -138,14 +146,14 @@ namespace EmailInvoiceFormat
         /// </summary>
         /// <example>XF4321-89</example>
         [JsonProperty("invoice_id")]
-        public string InvoiceId { get; set; }
+        public string? InvoiceId { get; set; }
 
         /// <summary>
         /// The name of the company issuing the invoice
         /// </summary>
         /// <example>Service Provider</example>
         [JsonProperty("issuer", Required = Required.Always)]
-        public string Issuer { get; set; }
+        public string? Issuer { get; set; }
 
         /// <summary>
         /// Flag to tell if the invoice is paid
@@ -167,14 +175,6 @@ namespace EmailInvoiceFormat
         /// </summary>
         /// <example>https://…/paybill?id=XF4321-89</example>
         [JsonProperty("payUrl")]
-        public string PayURL { get; set; }
-
-        /// <summary>
-        /// The only existing version of this format to date
-        /// </summary>
-        /// <example>1.0</example>
-        [JsonProperty("version", Required = Required.Always)]
-        public string Version
-        { get { return "1.0"; } }
+        public string? PayURL { get; set; }
     }
 }
